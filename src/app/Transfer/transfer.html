@@ -1,0 +1,29 @@
+<h2>Transfer</h2>
+
+<label>From Account ID</label>
+<input type="number" [(ngModel)]="fromAccountId">
+
+<br><br>
+
+<label>To Account ID</label>
+<input type="number" [(ngModel)]="toAccountId">
+
+<br><br>
+
+<label>Amount</label>
+<input type="number" [(ngModel)]="amount">
+
+<br><br>
+
+<label>Idempotency Key</label>
+<input type="text" [(ngModel)]="idempotencyKey">
+
+<br><br>
+
+<button (click)="transfer()">Transfer</button>
+
+<div *ngIf="response">
+  <p>Transaction ID: {{ response.transactionId }}</p>
+  <p>Status: {{ response.status }}</p>
+  <p>Message: {{ response.message }}</p>
+</div>

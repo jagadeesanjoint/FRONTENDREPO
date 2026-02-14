@@ -33,18 +33,14 @@ export class History implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const accountId = this.authService.getAccountId();
-    if (accountId == null) {
-      this.loading = false;
-      this.errorMessage = 'Account not found.';
-      return;
-    }
-    this.accountService.getTransactions(accountId).subscribe({
+    const currentId = this.authService.getAccountId();
+    this.loading = true;
+    this.errorMessage = '';
+    this.accountService.getCurrentTransactions().subscribe({
       next: (list) => {
-        const currentId = accountId;
         this.rows = (list || []).map((t) => {
-          const isDebit = (t as { fromAccountId?: number }).fromAccountId === currentId
-            || (t as { fromAccountID?: number }).fromAccountID === currentId;
+          const fromId = (t as { fromAccountId?: number }).fromAccountId ?? (t as { fromAccountID?: number }).fromAccountID;
+          const isDebit = fromId === currentId;
           const dateStr = (t as { createdOn?: string }).createdOn
             || (t as { timestamp?: string }).timestamp
             || (t as { createdOn?: string })['createdOn']
@@ -59,9 +55,15 @@ export class History implements OnInit {
         });
         this.loading = false;
       },
-      error: () => {
-        this.errorMessage = 'Failed to load transactions.';
+      error: (err) => {
         this.loading = false;
+        if (err?.status === 401) {
+          this.authService.logout();
+          return;
+        }
+        this.errorMessage = err?.status === 0
+          ? 'Cannot reach server. Make sure the backend is running (port 8585).'
+          : 'Failed to load transactions.';
       }
     });
   }

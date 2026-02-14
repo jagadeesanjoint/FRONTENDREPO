@@ -28,13 +28,9 @@ export class Dashboard implements OnInit {
 
   ngOnInit(): void {
     this.holderName = this.authService.getHolderName();
-    const accountId = this.authService.getAccountId();
-    if (accountId == null) {
-      this.loading = false;
-      this.errorMessage = 'Account not found. Please log in again.';
-      return;
-    }
-    this.accountService.getAccount(accountId).subscribe({
+    this.loading = true;
+    this.errorMessage = '';
+    this.accountService.getCurrentAccount().subscribe({
       next: (res) => {
         this.account = res;
         this.balance = res.balance;
@@ -43,6 +39,10 @@ export class Dashboard implements OnInit {
       },
       error: (err) => {
         this.loading = false;
+        if (err?.status === 401) {
+          this.authService.logout();
+          return;
+        }
         if (err?.status === 0) {
           this.errorMessage = 'Cannot reach server. Make sure the backend is running (port 8585).';
         } else {

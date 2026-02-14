@@ -1,22 +1,56 @@
 <div class="dashboard">
-  <h2 class="welcome-banner">Welcome, {{ holderName || 'User' }}</h2>
-
   @if (errorMessage) {
     <div class="alert alert-error">{{ errorMessage }}</div>
   }
 
   @if (loading) {
-    <p>Loading...</p>
+    <div class="loading-state">
+      <p class="loading-text">Loading...</p>
+    </div>
   } @else if (account) {
-    <div class="balance-card">
-      <span class="balance-label">Current balance</span>
-      <span class="balance-amount">{{ balance | number:'1.2-2' }} {{ currency }}</span>
+    <div class="greeting">
+      <span class="greeting-label">{{ greeting }}</span>
+      <span class="greeting-name">{{ holderName }} 👋</span>
     </div>
 
-    <div class="actions">
-      <button class="btn btn-primary" routerLink="/transfer">Transfer</button>
-      <button class="btn btn-secondary" routerLink="/history">History</button>
-      <button class="btn btn-outline" (click)="logout()">Logout</button>
+    <div class="balance-card">
+      <span class="balance-label">Available Balance</span>
+      <span class="balance-amount">{{ currencySymbol }}{{ balance | number:'1.2-2' }}</span>
+      <span class="account-masked">Account: {{ maskedAccountNumber }}</span>
     </div>
+
+    <div class="actions-grid">
+      <a class="action-btn" routerLink="/transfer">
+        <span class="action-icon">💸</span>
+        <span class="action-label">Transfer</span>
+      </a>
+      <a class="action-btn" routerLink="/history">
+        <span class="action-icon">📜</span>
+        <span class="action-label">History</span>
+      </a>
+      <a class="action-btn" routerLink="/dashboard">
+        <span class="action-icon">👤</span>
+        <span class="action-label">Profile</span>
+      </a>
+      <button type="button" class="action-btn" (click)="logout()">
+        <span class="action-icon">🚪</span>
+        <span class="action-label">Logout</span>
+      </button>
+    </div>
+
+    <nav class="bottom-nav">
+      <a class="nav-item" routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <span class="nav-icon">🏠</span>
+        <span>Home</span>
+      </a>
+      <a class="nav-item" routerLink="/transfer" routerLinkActive="active">
+        <span class="nav-icon">💸</span>
+        <span>Transfer</span>
+      </a>
+      <a class="nav-item" routerLink="/history" routerLinkActive="active">
+        <span class="nav-icon">📜</span>
+        <span>History</span>
+      </a>
+    </nav>
   }
 </div>

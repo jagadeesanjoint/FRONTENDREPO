@@ -1,29 +1,56 @@
-<h2>Transfer</h2>
+<div class="transfer-page">
+  <h2>Transfer</h2>
 
-<label>From Account ID</label>
-<input type="number" [(ngModel)]="fromAccountId">
+  <form (ngSubmit)="transfer()">
+    <div class="form-group">
+      <label>From Account</label>
+      <input type="text" [value]="fromAccountId" readonly class="readonly" />
+    </div>
 
-<br><br>
+    <div class="form-group">
+      <label for="toAccount">To Account</label>
+      <input
+        id="toAccount"
+        type="number"
+        [(ngModel)]="toAccountId"
+        name="toAccountId"
+        min="1"
+        [disabled]="loading"
+        placeholder="Destination account ID"
+      />
+    </div>
 
-<label>To Account ID</label>
-<input type="number" [(ngModel)]="toAccountId">
+    <div class="form-group">
+      <label for="amount">Amount</label>
+      <input
+        id="amount"
+        type="number"
+        [(ngModel)]="amount"
+        name="amount"
+        min="0.01"
+        step="0.01"
+        [disabled]="loading"
+        placeholder="0.00"
+      />
+    </div>
 
-<br><br>
+    @if (errorMessage) {
+      <div class="alert alert-error">{{ errorMessage }}</div>
+    }
+    @if (response) {
+      <div class="alert" [class.alert-success]="response.status === 'SUCCESS'" [class.alert-error]="response.status !== 'SUCCESS'">
+        {{ response.message }}
+        @if (response.status === 'SUCCESS' && (response.transactionId || response.id)) {
+          <br><small>Transaction ID: {{ response.transactionId || response.id }}</small>
+        }
+      </div>
+    }
 
-<label>Amount</label>
-<input type="number" [(ngModel)]="amount">
-
-<br><br>
-
-<label>Idempotency Key</label>
-<input type="text" [(ngModel)]="idempotencyKey">
-
-<br><br>
-
-<button (click)="transfer()">Transfer</button>
-
-<div *ngIf="response">
-  <p>Transaction ID: {{ response.transactionId }}</p>
-  <p>Status: {{ response.status }}</p>
-  <p>Message: {{ response.message }}</p>
+    <div class="actions">
+      <button type="submit" class="btn btn-primary" [disabled]="loading">
+        {{ loading ? 'Transferring...' : 'Transfer' }}
+      </button>
+      <button type="button" class="btn btn-outline" (click)="cancel()">Cancel</button>
+    </div>
+  </form>
 </div>

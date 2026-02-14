@@ -1,13 +1,37 @@
-<h2>Login</h2>
+<div class="login-container">
+  <h2>Login</h2>
 
-<label>Username</label>
-<input type="text" [(ngModel)]="username" name="username">
+  @if (errorMessage) {
+    <div class="alert alert-error" role="alert">{{ errorMessage }}</div>
+  }
 
-<br><br>
+  <form (ngSubmit)="login()">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input
+        id="username"
+        type="text"
+        [(ngModel)]="username"
+        name="username"
+        required
+        [disabled]="loading"
+      />
+    </div>
 
-<label>Password</label>
-<input type="password" [(ngModel)]="password" name="password">
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        id="password"
+        type="password"
+        [(ngModel)]="password"
+        name="password"
+        required
+        [disabled]="loading"
+      />
+    </div>
 
-<br><br>
-
-<button (click)="login()">Login</button>
+    <button type="submit" class="btn btn-primary" [disabled]="loading">
+      {{ loading ? 'Logging in...' : 'Login' }}
+    </button>
+  </form>
+</div>

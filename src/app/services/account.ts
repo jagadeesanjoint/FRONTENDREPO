@@ -3,13 +3,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AccountResponse } from '../models/account-response.model';
 import { TransactionLog } from '../models/transaction-log.model';
+import { API_BASE_URL } from '../core/api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
-
-  private baseUrl: string = 'http://localhost:8585/api/v1/accounts';
+  private baseUrl = `${API_BASE_URL}/accounts`;
 
   constructor(private http: HttpClient) {}
 

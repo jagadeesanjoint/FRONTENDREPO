@@ -1,8 +1,10 @@
 export interface TransactionLog {
   id: string;
-  fromAccountID: number;
-  toAccountID: number;
+  fromAccountId: number;
+  toAccountId: number;
   amount: number;
   status: string;
-  timestamp: string;
+  failureReason?: string;
+  idempotencyKey?: string;
+  createdOn: string;
 }

@@ -1,12 +1,22 @@
-<h2>Dashboard</h2>
+<div class="dashboard">
+  <h2 class="welcome-banner">Welcome, {{ holderName || 'User' }}</h2>
 
-<p>Account ID: {{ account.id }}</p>
-<p>Holder Name: {{ account.holderName }}</p>
-<p>Status: {{ account.status }}</p>
-<p>Balance: {{ balance }}</p>
+  @if (errorMessage) {
+    <div class="alert alert-error">{{ errorMessage }}</div>
+  }
 
-<br>
+  @if (loading) {
+    <p>Loading...</p>
+  } @else if (account) {
+    <div class="balance-card">
+      <span class="balance-label">Current balance</span>
+      <span class="balance-amount">{{ balance | number:'1.2-2' }} {{ currency }}</span>
+    </div>
 
-<button routerLink="/transfer">Go to Transfer</button>
-<button routerLink="/history">View Transaction History</button>
-
+    <div class="actions">
+      <button class="btn btn-primary" routerLink="/transfer">Transfer</button>
+      <button class="btn btn-secondary" routerLink="/history">History</button>
+      <button class="btn btn-outline" (click)="logout()">Logout</button>
+    </div>
+  }
+</div>

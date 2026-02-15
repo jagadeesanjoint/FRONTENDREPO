@@ -30,6 +30,9 @@ export class Dashboard implements OnInit {
     this.holderName = this.authService.getHolderName();
     this.loading = true;
     this.errorMessage = '';
+    const accountId = this.authService.getAccountId();
+
+    // Try GET /me first; if it fails (e.g. backend not sending auth), fall back to GET /accounts/{id} with stored accountId from login
     this.accountService.getCurrentAccount().subscribe({
       next: (res) => {
         this.account = res;
@@ -38,18 +41,37 @@ export class Dashboard implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        this.loading = false;
         if (err?.status === 401) {
           this.authService.logout();
           return;
         }
-        if (err?.status === 0) {
-          this.errorMessage = 'Cannot reach server. Make sure the backend is running (port 8585).';
+        if (accountId != null) {
+          this.accountService.getAccount(accountId).subscribe({
+            next: (res) => {
+              this.account = res;
+              this.balance = res.balance;
+              this.holderName = res.holderName || this.holderName;
+              this.loading = false;
+            },
+            error: (e) => {
+              this.loading = false;
+              this.setError(e);
+            }
+          });
         } else {
-          this.errorMessage = err?.error?.message ?? 'Failed to load account.';
+          this.loading = false;
+          this.setError(err);
         }
       }
     });
+  }
+
+  private setError(err: { status?: number; error?: { message?: string }; message?: string }): void {
+    if (err?.status === 0) {
+      this.errorMessage = 'Cannot reach server. Make sure the backend is running (port 8585).';
+    } else {
+      this.errorMessage = err?.error?.message ?? err?.message ?? 'Failed to load account.';
+    }
   }
 
   /** Time-based greeting: Good Morning / Afternoon / Evening */

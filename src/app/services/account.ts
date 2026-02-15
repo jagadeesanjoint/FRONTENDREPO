@@ -11,16 +11,16 @@ import { API_BASE_URL } from '../core/api.config';
 export class AccountService {
   private readonly baseUrl = API_BASE_URL;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /** Current user's account (uses Basic auth, no id in URL). Use for dashboard. */
   getCurrentAccount(): Observable<AccountResponse> {
-    return this.http.get<AccountResponse>(`${this.baseUrl}/me`);
+    return this.http.get<AccountResponse>(`${this.baseUrl}/accounts/me`);
   }
 
   /** Current user's transactions (uses Basic auth). Use for history. */
   getCurrentTransactions(): Observable<TransactionLog[]> {
-    return this.http.get<TransactionLog[]>(`${this.baseUrl}/me/transactions`);
+    return this.http.get<TransactionLog[]>(`${this.baseUrl}/accounts/me/transactions`);
   }
 
   /** Legacy: get account by id (e.g. for transfer form source). Prefer getCurrentAccount() for dashboard. */
